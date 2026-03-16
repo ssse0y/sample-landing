@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TRIPON — 기록되는 여행, 이어지는 동선</title>
+<link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --blue: #1A3A8F;
+    --blue-mid: #2351C5;
+    --blue-light: #4A7DFF;
+    --gold: #F5A623;
+    --bg: #F7F9FC;
+    --white: #FFFFFF;
+    --text: #111827;
+    --muted: #6B7280;
+    --border: rgba(0,0,0,0.08);
+  }
+  body {
+    font-family: 'Pretendard', 'Apple SD Gothic Neo', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 5%;
+    height: 64px;
+  }
+  .nav-logo {
+    font-size: 22px; font-weight: 900; letter-spacing: -0.5px;
+    color: var(--blue);
+  }
+  .nav-logo span { color: var(--gold); }
+  .nav-links { display: flex; gap: 32px; }
+  .nav-links a {
+    font-size: 14px; font-weight: 500; color: var(--muted);
+    text-decoration: none; transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--blue); }
+  .nav-cta {
+    background: var(--blue); color: white;
+    border: none; padding: 10px 22px;
+    border-radius: 50px; font-size: 14px; font-weight: 600;
+    cursor: pointer; transition: transform 0.15s, background 0.2s;
+  }
+  .nav-cta:hover { background: var(--blue-mid); transform: scale(1.03); }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    background: linear-gradient(145deg, #0D1F5C 0%, #1A3A8F 45%, #2351C5 100%);
+    display: flex; align-items: center; justify-content: center;
+    text-align: center;
+    padding: 100px 5% 80px;
+    position: relative; overflow: hidden;
+  }
+  .hero-bg-dots {
+    position: absolute; inset: 0;
+    background-image: radial-gradient(circle, rgba(255,255,255,0.06) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+  .hero-plane {
+    position: absolute; top: 18%; left: 8%; font-size: 28px;
+    animation: float1 6s ease-in-out infinite;
+    opacity: 0.5;
+  }
+  .hero-plane2 {
+    position: absolute; bottom: 22%; right: 10%; font-size: 20px;
+    animation: float2 8s ease-in-out infinite;
+    opacity: 0.35;
+  }
+  @keyframes float1 { 0%,100%{transform:translate(0,0) rotate(-20deg)} 50%{transform:translate(12px,-16px) rotate(-10deg)} }
+  @keyframes float2 { 0%,100%{transform:translate(0,0) rotate(15deg)} 50%{transform:translate(-10px,12px) rotate(25deg)} }
+
+  .hero-content { position: relative; z-index: 1; max-width: 720px; }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 50px; padding: 6px 16px; margin-bottom: 28px;
+    font-size: 13px; color: rgba(255,255,255,0.85); font-weight: 500;
+  }
+  .badge-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--gold); }
+  .hero h1 {
+    font-size: clamp(42px, 8vw, 80px);
+    font-weight: 900; color: white; line-height: 1.05;
+    letter-spacing: -2px; margin-bottom: 20px;
+  }
+  .hero h1 .highlight { color: var(--gold); }
+  .hero p {
+    font-size: clamp(16px, 2vw, 20px); color: rgba(255,255,255,0.72);
+    line-height: 1.65; margin-bottom: 44px; font-weight: 400;
+  }
+  .hero-btns { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+  .btn-primary {
+    background: var(--gold); color: #1A1A1A;
+    border: none; padding: 16px 36px; border-radius: 50px;
+    font-size: 16px; font-weight: 700; cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.2s;
+    box-shadow: 0 4px 24px rgba(245,166,35,0.35);
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(245,166,35,0.45); }
+  .btn-outline {
+    background: transparent; color: white;
+    border: 1.5px solid rgba(255,255,255,0.4); padding: 16px 36px;
+    border-radius: 50px; font-size: 16px; font-weight: 600; cursor: pointer;
+    transition: background 0.2s;
+  }
+  .btn-outline:hover { background: rgba(255,255,255,0.1); }
+
+  .hero-stats {
+    margin-top: 64px;
+    display: flex; gap: 48px; justify-content: center; flex-wrap: wrap;
+  }
+  .stat { text-align: center; }
+  .stat-num { font-size: 28px; font-weight: 900; color: white; letter-spacing: -1px; }
+  .stat-num span { color: var(--gold); }
+  .stat-label { font-size: 12px; color: rgba(255,255,255,0.55); margin-top: 2px; font-weight: 500; letter-spacing: 0.5px; text-transform: uppercase; }
+
+  /* SECTIONS */
+  section { padding: 96px 5%; }
+  .section-label {
+    font-size: 12px; font-weight: 700; letter-spacing: 2px;
+    color: var(--blue-light); text-transform: uppercase; margin-bottom: 14px;
+  }
+  .section-title {
+    font-size: clamp(28px, 4vw, 44px); font-weight: 900;
+    letter-spacing: -1px; line-height: 1.15; margin-bottom: 16px;
+  }
+  .section-sub { font-size: 17px; color: var(--muted); line-height: 1.7; max-width: 560px; }
+
+  /* PROBLEM */
+  .problem-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 24px; margin-top: 56px;
+  }
+  .problem-card {
+    background: var(--white); border: 1px solid var(--border);
+    border-radius: 20px; padding: 32px 28px;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .problem-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,0.08); }
+  .prob-icon {
+    width: 52px; height: 52px; border-radius: 14px;
+    background: #EEF3FF; display: flex; align-items: center; justify-content: center;
+    font-size: 24px; margin-bottom: 20px;
+  }
+  .problem-card h3 { font-size: 17px; font-weight: 700; margin-bottom: 8px; }
+  .problem-card p { font-size: 14px; color: var(--muted); line-height: 1.65; }
+  .prob-stat {
+    margin-top: 16px; padding-top: 16px;
+    border-top: 1px solid var(--border);
+    font-size: 13px; color: var(--blue-mid); font-weight: 600;
+  }
+
+  /* SOLUTION */
+  .solution-bg { background: #0D1F5C; }
+  .solution-bg .section-label { color: var(--gold); }
+  .solution-bg .section-title { color: white; }
+  .solution-bg .section-sub { color: rgba(255,255,255,0.6); }
+
+  .features-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 20px; margin-top: 56px;
+  }
+  .feature-card {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 20px; padding: 32px 28px;
+    transition: background 0.2s;
+  }
+  .feature-card:hover { background: rgba(255,255,255,0.1); }
+  .feat-num {
+    font-size: 11px; font-weight: 700; letter-spacing: 2px;
+    color: var(--gold); margin-bottom: 16px; text-transform: uppercase;
+  }
+  .feat-icon { font-size: 32px; margin-bottom: 16px; }
+  .feature-card h3 { font-size: 18px; font-weight: 700; color: white; margin-bottom: 10px; }
+  .feature-card p { font-size: 14px; color: rgba(255,255,255,0.6); line-height: 1.7; }
+
+  /* STRATEGY */
+  .strategy-row {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 60px; align-items: center; margin-top: 56px;
+  }
+  @media(max-width: 700px) {
+    .strategy-row { grid-template-columns: 1fr; }
+    .nav-links { display: none; }
+  }
+
+  .kpi-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .kpi-card {
+    background: var(--white); border: 1px solid var(--border);
+    border-radius: 16px; padding: 24px 20px;
+  }
+  .kpi-label { font-size: 11px; font-weight: 700; letter-spacing: 1.5px; color: var(--muted); text-transform: uppercase; margin-bottom: 8px; }
+  .kpi-value { font-size: 28px; font-weight: 900; color: var(--blue); letter-spacing: -1px; }
+  .kpi-desc { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+  .revenue-steps { display: flex; flex-direction: column; gap: 16px; }
+  .rev-step {
+    display: flex; gap: 18px; align-items: flex-start;
+    background: var(--white); border: 1px solid var(--border);
+    border-radius: 16px; padding: 20px 22px;
+    transition: transform 0.15s;
+  }
+  .rev-step:hover { transform: translateX(4px); }
+  .rev-badge {
+    min-width: 32px; height: 32px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 800; color: white;
+  }
+  .rb1 { background: #4A7DFF; }
+  .rb2 { background: var(--blue); }
+  .rb3 { background: #0D1F5C; }
+  .rev-step h4 { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+  .rev-step p { font-size: 13px; color: var(--muted); line-height: 1.55; }
+
+  /* TEAM */
+  .team-bg { background: #F0F4FF; }
+  .team-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 24px; margin-top: 56px;
+  }
+  .team-card {
+    background: var(--white); border: 1px solid var(--border);
+    border-radius: 24px; padding: 32px 24px; text-align: center;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .team-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,0.08); }
+  .avatar {
+    width: 72px; height: 72px; border-radius: 50%;
+    margin: 0 auto 18px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 26px; font-weight: 800; color: white;
+  }
+  .av1 { background: linear-gradient(135deg, #4A7DFF, #2351C5); }
+  .av2 { background: linear-gradient(135deg, #F5A623, #E07B00); }
+  .av3 { background: linear-gradient(135deg, #1D9E75, #0F6E56); }
+  .team-card h3 { font-size: 18px; font-weight: 800; margin-bottom: 4px; }
+  .team-dept { font-size: 13px; color: var(--blue-mid); font-weight: 600; margin-bottom: 12px; }
+  .team-desc { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+  /* CTA */
+  .cta-section {
+    background: linear-gradient(135deg, var(--blue) 0%, #1B2F80 100%);
+    text-align: center; padding: 100px 5%;
+  }
+  .cta-section h2 {
+    font-size: clamp(30px, 5vw, 52px); font-weight: 900;
+    color: white; letter-spacing: -1.5px; margin-bottom: 16px;
+  }
+  .cta-section p { font-size: 18px; color: rgba(255,255,255,0.65); margin-bottom: 44px; }
+
+  /* FOOTER */
+  footer {
+    background: #0D1A4A; padding: 40px 5%;
+    display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;
+  }
+  .footer-logo { font-size: 18px; font-weight: 900; color: white; }
+  .footer-logo span { color: var(--gold); }
+  footer p { font-size: 13px; color: rgba(255,255,255,0.4); }
+
+  /* Scroll reveal */
+  .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.6s, transform 0.6s; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">TRI<span>PON</span></div>
+  <div class="nav-links">
+    <a href="#problem">문제</a>
+    <a href="#solution">솔루션</a>
+    <a href="#strategy">전략</a>
+    <a href="#team">팀</a>
+  </div>
+  <button class="nav-cta">앱 다운로드</button>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg-dots"></div>
+  <div class="hero-plane">✈</div>
+  <div class="hero-plane2">✈</div>
+  <div class="hero-content">
+    <div class="hero-badge">
+      <div class="badge-dot"></div>
+      DIGITAL HANARO 9기 · 63빌딩
+    </div>
+    <h1>기록되는 여행,<br><span class="highlight">이어지는 동선</span></h1>
+    <p>사진 정리부터 경로 기록까지 — AI가 자동으로 완성하는<br>나만의 여행 일지 서비스</p>
+    <div class="hero-btns">
+      <button class="btn-primary">무료로 시작하기</button>
+      <button class="btn-outline">서비스 소개 보기</button>
+    </div>
+    <div class="hero-stats">
+      <div class="stat">
+        <div class="stat-num">89<span>%</span></div>
+        <div class="stat-label">여행 후 기록 희망</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">51<span>%</span></div>
+        <div class="stat-label">정리에 1시간+ 소요</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">70<span>%</span></div>
+        <div class="stat-label">시간 단축 목표</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROBLEM -->
+<section id="problem">
+  <div class="section-label reveal">Problem</div>
+  <div class="section-title reveal">여행 기록, 원하지만<br>너무 번거롭다</div>
+  <div class="section-sub reveal">89.8%가 여행 기록을 남기지만, 절반 이상이 정리에 1시간 이상을 소비합니다. 기존 서비스는 기록을 돕지만, 시간 단축은 해결하지 못합니다.</div>
+  <div class="problem-grid">
+    <div class="problem-card reveal">
+      <div class="prob-icon">📸</div>
+      <h3>사진 정리의 번거로움</h3>
+      <p>수백 장의 사진을 일일이 장소별로 분류하는 작업은 여행 후 가장 큰 부담입니다.</p>
+      <div class="prob-stat">응답자의 71.4% 지적</div>
+    </div>
+    <div class="problem-card reveal">
+      <div class="prob-icon">⏱</div>
+      <h3>기록 정리에 오랜 시간</h3>
+      <p>51.5%가 사진 기록에만 1시간 이상 소요. 정작 추억을 되새길 여유가 없습니다.</p>
+      <div class="prob-stat">42.9% 시간 문제 호소</div>
+    </div>
+    <div class="problem-card reveal">
+      <div class="prob-icon">📍</div>
+      <h3>장소 기억이 나지 않음</h3>
+      <p>방문했던 장소나 이동 경로가 기억나지 않아 기록의 의미가 퇴색됩니다.</p>
+      <div class="prob-stat">23% 장소 기억 어려움</div>
+    </div>
+    <div class="problem-card reveal">
+      <div class="prob-icon">🗂</div>
+      <h3>분산된 기록 매체</h3>
+      <p>사진앱, 인스타그램, 블로그에 흩어진 기록들 — 한곳에서 찾기 어렵습니다.</p>
+      <div class="prob-stat">체계적 정리 불가</div>
+    </div>
+  </div>
+</section>
+
+<!-- SOLUTION -->
+<section id="solution" class="solution-bg">
+  <div class="section-label reveal">Solution</div>
+  <div class="section-title reveal">TRIPON이 자동으로<br>해결합니다</div>
+  <div class="section-sub reveal">GPS·AI 기술로 경로를 기록하고, 사진을 자동 분류하며, 여행 일지까지 완성해 드립니다.</div>
+  <div class="features-grid">
+    <div class="feature-card reveal">
+      <div class="feat-num">01</div>
+      <div class="feat-icon">🤖</div>
+      <h3>AI 여행 기록 자동 생성</h3>
+      <p>사진과 영상의 위치 정보를 분석해 여행 일지와 동선을 자동으로 완성합니다.</p>
+    </div>
+    <div class="feature-card reveal">
+      <div class="feat-num">02</div>
+      <div class="feat-icon">🗺</div>
+      <h3>사진 자동 분류·아카이빙</h3>
+      <p>GPS 기반 AI가 시간·장소 정보를 분석해 사진을 동선별로 자동 정리합니다.</p>
+    </div>
+    <div class="feature-card reveal">
+      <div class="feat-num">03</div>
+      <div class="feat-icon">✨</div>
+      <h3>개인화 여행 코스 추천</h3>
+      <p>사용자 취향과 여행 테마를 반영한 맞춤형 동선 추천 및 SNS 공유 기능.</p>
+    </div>
+    <div class="feature-card reveal">
+      <div class="feat-num">04</div>
+      <div class="feat-icon">📷</div>
+      <h3>포토 스팟 & 촬영 가이드</h3>
+      <p>지역별 인기 촬영 장소와 추천 포즈, 구도 정보로 여행 경험을 확장합니다.</p>
+    </div>
+  </div>
+</section>
+
+<!-- STRATEGY -->
+<section id="strategy">
+  <div class="section-label reveal">Strategy</div>
+  <div class="section-title reveal">핵심 지표 & 수익 구조</div>
+  <div class="strategy-row">
+    <div>
+      <div class="kpi-grid">
+        <div class="kpi-card reveal">
+          <div class="kpi-label">사용자 확보</div>
+          <div class="kpi-value">5,000</div>
+          <div class="kpi-desc">출시 3개월 내 다운로드</div>
+        </div>
+        <div class="kpi-card reveal">
+          <div class="kpi-label">사용 편의성</div>
+          <div class="kpi-value">70%</div>
+          <div class="kpi-desc">기록 시간 단축 목표</div>
+        </div>
+        <div class="kpi-card reveal">
+          <div class="kpi-label">기능 완성도</div>
+          <div class="kpi-value">80%+</div>
+          <div class="kpi-desc">GPS 경로 자동 생성 성공률</div>
+        </div>
+        <div class="kpi-card reveal">
+          <div class="kpi-label">수익성</div>
+          <div class="kpi-value">5%+</div>
+          <div class="kpi-desc">프리미엄 구독 전환율</div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="revenue-steps">
+        <div class="rev-step reveal">
+          <div class="rev-badge rb1">1</div>
+          <div>
+            <h4>초기 수익</h4>
+            <p>프리미엄 구독료 + AI 일지 추가 생성 과금</p>
+          </div>
+        </div>
+        <div class="rev-step reveal">
+          <div class="rev-badge rb2">2</div>
+          <div>
+            <h4>성장 수익</h4>
+            <p>카페·숙소 등 여행지 제휴 광고 + 여행 브랜드 협업 프로모션</p>
+          </div>
+        </div>
+        <div class="rev-step reveal">
+          <div class="rev-badge rb3">3</div>
+          <div>
+            <h4>확장 수익</h4>
+            <p>여행 데이터 리포트 판매 + B2B 인사이트 서비스 + API 연동</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TEAM -->
+<section id="team" class="team-bg">
+  <div class="section-label reveal">Team</div>
+  <div class="section-title reveal">63빌딩 팀을 소개합니다</div>
+  <div class="team-grid">
+    <div class="team-card reveal">
+      <div class="avatar av1">김</div>
+      <h3>김성주</h3>
+      <div class="team-dept">개발 리드</div>
+      <p class="team-desc">컴퓨터공학과 졸업<br>IT 서비스 개발 학회<br>자율주행 AI 기업 인턴</p>
+    </div>
+    <div class="team-card reveal">
+      <div class="avatar av2">백</div>
+      <h3>백서연</h3>
+      <div class="team-dept">기획 & AI</div>
+      <p class="team-desc">화학과 / IT공학과 졸업<br>D은행 앱 기획 공모전<br>머신러닝 랩실 인턴</p>
+    </div>
+    <div class="team-card reveal">
+      <div class="avatar av3">조</div>
+      <h3>조한별</h3>
+      <div class="team-dept">데이터 & 개발</div>
+      <p class="team-desc">데이터 사이언스/SW 졸업<br>대화형 챗봇 '앵쵸' 개발<br>금융 주식 예측 프로젝트</p>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <h2 class="reveal">여행의 모든 순간을<br>자동으로 기록하세요</h2>
+  <p class="reveal">TRIPON과 함께, 사진 정리 걱정 없이 여행에만 집중하세요</p>
+  <div class="hero-btns reveal">
+    <button class="btn-primary">지금 무료로 시작하기</button>
+    <button class="btn-outline">데모 영상 보기</button>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">TRI<span>PON</span></div>
+  <p>기록되는 여행, 이어지는 동선 — DIGITAL HANARO 9기 · 63빌딩</p>
+  <p style="color: rgba(255,255,255,0.3); font-size: 12px;">© 2025 TRIPON. All rights reserved.</p>
+</footer>
+
+<script>
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 80);
+      }
+    });
+  }, { threshold: 0.12 });
+  reveals.forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
